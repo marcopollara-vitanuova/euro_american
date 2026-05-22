@@ -1,0 +1,6 @@
+import { AppShell } from "@/components/layout/app-shell";
+import { KpiCard } from "@/components/charts/kpi-card";
+import { Card, CardHeader } from "@/components/ui/card";
+import { distributors, incidents, policies, products, quotes, referrals, users } from "@/lib/demo/data";
+import { formatCurrency } from "@/lib/utils";
+export default function AdminDashboard() { const premium = policies.reduce((sum, p) => sum + p.grossPremium, 0); return <AppShell title="MGA dashboard" breadcrumb="Backend MGA"><div className="kpi-grid"><KpiCard label="Preventivi" value={quotes.length} /><KpiCard label="Premi emessi" value={formatCurrency(premium)} /><KpiCard label="Referral aperti" value={referrals.length} /><KpiCard label="Utenti senza MFA" value={users.filter((u) => !u.mfaEnabled).length} /></div><div className="data-grid mt-6"><Card><CardHeader title="Produzione" description="Per distributore, prodotto e carrier" /><p>Distributori attivi: {distributors.length}</p><p>Prodotti attivi: {products.length}</p></Card><Card><CardHeader title="Security & compliance" description="DORA/NIS2/GDPR readiness" /><p>Incidenti aperti: {incidents.length}</p><p>Change request pendenti: 1</p><p>Fornitori ICT critici: 1</p></Card></div></AppShell>; }

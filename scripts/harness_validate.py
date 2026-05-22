@@ -26,9 +26,19 @@ REQUIRED = [
     'requirements-dev.txt',
     'package.json',
     'package-lock.json',
-    'app/layout.js',
-    'app/page.js',
+    'app/layout.tsx',
+    'app/page.tsx',
     'app/globals.css',
+    'public/robots.txt',
+    'prisma/schema.prisma',
+    'prisma.config.ts',
+    'prisma/seed.ts',
+    '.env.example',
+    'Dockerfile',
+    'docker-compose.yml',
+    'docs/setup/GCP_DEPLOYMENT.md',
+    'proxy.ts',
+    'tsconfig.json',
 ]
 
 FORBIDDEN_MARKERS = ['TODO_SECRET', 'REAL_TOKEN', 'PASSWORD=', 'PRIVATE_KEY']

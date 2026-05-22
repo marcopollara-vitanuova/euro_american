@@ -1,0 +1,3 @@
+import { AppShell } from "@/components/layout/app-shell";
+import { Card, CardHeader } from "@/components/ui/card";
+export default function Page() { return <AppShell title="Bordereaux" breadcrumb="Backend MGA / bordereaux"><Card><CardHeader title="Bordereaux" description="Emissioni, incassi, rinnovi, tecnico-assuntivo e contabile." /><div className="grid gap-3 md:grid-cols-3"><div className="rounded-2xl bg-slate-50 p-4">Workflow approvativo</div><div className="rounded-2xl bg-slate-50 p-4">Audit append-only</div><div className="rounded-2xl bg-slate-50 p-4">Export evidenze mock</div></div></Card></AppShell>; }

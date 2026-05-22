@@ -1,83 +1,174 @@
-# HARNESS Engineering Starter Pack per Cursor
+# Axieme MGA Platform
 
-Questo repository scaffold contiene il sistema operativo per far lavorare un agente AI in modo controllato, verificabile e progressivo.
+Axieme MGA Platform e' una web application InsurTech per MGA / Underwriting Agency. Il progetto nasce dentro HARNESS: repository-first governance, SDD/ADR, regole Cursor, auditability, security/privacy by design e operational resilience.
 
-## Obiettivo
-Costruire un harness per agenti AI che consenta di usare Cursor/Codex/LLM coding agent in modalità spec-driven, con guardrail, tracciabilità, human-in-the-loop, controllo di sicurezza e qualità.
+> This platform is designed with security, auditability and operational resilience controls intended to support DORA/NIS2/GDPR readiness. Actual legal and regulatory compliance depends on the operating organization’s policies, governance, contracts, procedures, risk assessments, supervisory obligations and legal review. The software alone does not guarantee compliance.
 
-## Principi fondanti
-1. Repository-first: tutto ciò che l'agente deve sapere vive nel repository.
-2. Spec-driven development: nessuna implementazione senza SDD approvato.
-3. Human-in-the-loop: l'agente propone, l'umano approva le decisioni critiche.
-4. Least privilege: accessi iniziali solo read-only o utenze test dedicate.
-5. Incremental delivery: un'integrazione, un MCP, un plugin, un accesso alla volta.
-6. Quality gates: test, lint, review, security check e compliance check prima di merge o deploy.
-7. Entropy management: pulizia periodica di documentazione, drift, duplicazioni, dipendenze e codice morto.
+## Stack
 
-## Alberatura
-```text
-.
-├── AGENT.md
-├── README.md
-├── PROJECT_CONTEXT.md
-├── .cursor/
-│   ├── README.md
-│   ├── mcp.json
-│   ├── rules.md
-│   ├── prompts.md
-│   └── rules/
-│       ├── harness-access-security.mdc
-│       ├── harness-context.mdc
-│       ├── harness-governance.mdc
-│       ├── harness-human-review.mdc
-│       ├── harness-sdd-workflow.mdc
-│       └── harness-validation-dod.mdc
-├── docs/
-│   ├── specs/
-│   │   └── SDD.md
-│   ├── sdd/
-│   │   ├── 00-executive-brief.md
-│   │   ├── 01-system-design-document.md
-│   │   ├── 02-architecture-decision-records.md
-│   │   ├── 03-data-access-and-mcp-policy.md
-│   │   ├── 04-security-compliance-controls.md
-│   │   └── 05-observability-and-feedback.md
-│   ├── governance/
-│   │   ├── ai-policy.md
-│   │   ├── human-in-the-loop.md
-│   │   ├── risk-register.md
-│   │   └── review-model.md
-│   ├── prompts/
-│   │   ├── 00-master-prompt.md
-│   │   ├── 01-discovery-prompt.md
-│   │   ├── 02-sdd-generation-prompt.md
-│   │   ├── 03-implementation-prompt.md
-│   │   ├── 04-review-prompt.md
-│   │   └── 05-entropy-cleanup-prompt.md
-│   ├── checklists/
-│   │   ├── readiness-checklist.md
-│   │   ├── pr-review-checklist.md
-│   │   └── production-release-checklist.md
-│   └── templates/
-│       ├── adr-template.md
-│       ├── task-brief-template.md
-│       └── pr-template.md
-├── skills/
-│   └── harness-sdd/
-│       ├── SKILL.md
-│       └── references/
-│           └── sdd-output-template.md
-├── scripts/
-│   └── harness_validate.py
-└── tests/
-    └── harness/
-        └── test_harness_docs.py
+- Next.js App Router, React, TypeScript strict.
+- Tailwind CSS e componenti shadcn-style locali in `components/ui`.
+- API REST tramite route handler modulari.
+- Zod per DTO validation.
+- Auth custom demo con cookie httpOnly, bcryptjs e RBAC.
+- Prisma ORM con schema PostgreSQL versionabile.
+- Mock provider per email, pagamenti, firma OTP, documenti e storage GCS.
+- Predisposizione GCP: Cloud Run, Cloud SQL, Secret Manager, Cloud Storage, Logging, Monitoring.
+
+## Setup locale
+
+```bash
+cp .env.example .env
+npm install
+npx prisma generate
+npm run dev
 ```
 
-## Come usarlo con Cursor
-1. Copia tutto nel root del repository target.
-2. Apri Cursor e incolla `docs/prompts/00-master-prompt.md`.
-3. Fai eseguire prima discovery e SDD, non codice.
-4. Approva gli ADR e le policy di accesso.
-5. Procedi per micro-task con prompt dedicati.
-6. Ogni output deve aggiornare SDD, ADR, `docs/checklists/` e test.
+Per database locale:
+
+```bash
+docker compose up -d postgres
+npx prisma migrate dev
+npm run db:seed
+```
+
+## Script
+
+```bash
+npm run dev
+npm run build
+npm run start
+npm run lint
+npm run typecheck
+npm run test
+npm run test:security
+npm run db:migrate
+npm run db:seed
+npm run db:studio
+```
+
+## Login demo
+
+Password per tutti gli utenti demo: `Password123!`
+
+- `superadmin@axieme.test`
+- `admin.mga@axieme.test`
+- `underwriter@axieme.test`
+- `broker@axieme.test`
+- `collaboratore@axieme.test`
+
+## Struttura progetto
+
+```text
+app/
+  (auth)/login
+  (distributor)/dashboard, customers, quotes, referrals, policies, renewals, statements, documents
+  (admin)/admin/dashboard, users, products, questionnaires, pricing, security, compliance, incidents
+  api/[...path]
+components/
+  ui, layout, forms, tables, charts, quote-wizard, questionnaire-builder, pricing-builder
+lib/
+  auth, permissions, prisma, pricing, rules, audit, documents, storage, payments, signature, notifications, security, compliance, demo
+prisma/
+  schema.prisma, seed.ts
+docs/
+  setup, governance, sdd, checklists, templates
+```
+
+Nota architetturale: le route admin sono esposte come `/admin/...` per evitare conflitti Next.js fra route group `(admin)` e `(distributor)` con lo stesso segmento `/dashboard`.
+
+## Moduli principali
+
+- **Auth & RBAC**: login email/username e password, cookie httpOnly, ruoli minimi, permission guard, tenant segregation, MFA predisposto.
+- **Distributor portal**: dashboard, clienti, quote wizard, referral, polizze, rinnovi, estratti conto, documenti.
+- **MGA admin**: utenti, distributori, prodotti, questionari, pricing, rules, referral queue, audit log, security, compliance, incidenti, fornitori ICT, change request.
+- **Pricing engine**: calcolo configurabile per prodotto/versione, trace, regole applicate, referral/declined outcomes.
+- **Rules engine**: JSON-style rules per blocking/referral/warning.
+- **Questionnaire engine**: questionari versionati, sezioni, domande, condizioni, mapping pricing/documenti.
+- **Documents**: PDF mock, hash, template version, signed URL mock GCS.
+- **Payments**: payment link mock, eventi e idempotenza predisposta.
+- **Signature**: OTP signature mock, stati e webhook predisposti.
+- **Audit**: eventi critici, request/correlation ID, risk level, append-only model.
+
+## Quote flow MVP
+
+Login -> Dashboard -> Cliente -> Nuovo preventivo -> Prodotto -> Questionario dinamico -> Calcolo premio/referral/declined -> Proposta PDF mock -> Payment link mock -> Emissione polizza -> Firma OTP mock -> Documenti -> Audit log.
+
+## API security
+
+Tutte le API non pubbliche passano da middleware sessione e guard applicativi. Gli endpoint pubblici sono limitati a login, password reset mock, health/readiness e webhook mock. Gli input principali sono validati con Zod. Gli errori ritornano codici non informativi.
+
+## Data segregation
+
+Ogni record demo contiene `tenantId`; i guard verificano ruolo, permesso, tenant e visibilita' gerarchica distributiva tramite `parentDistributorId` / discendenze.
+
+## Google Cloud Platform
+
+Vedi `docs/setup/GCP_DEPLOYMENT.md`.
+
+Variabili minime:
+
+```text
+DATABASE_URL=
+NEXTAUTH_SECRET=
+NEXTAUTH_URL=
+GCP_PROJECT_ID=
+GCP_REGION=europe-west8
+GCP_STORAGE_BUCKET=
+GCP_KMS_KEY_ID=
+GCP_SECRET_MANAGER_PREFIX=
+APP_ENV=
+LOG_LEVEL=
+AUDIT_LOG_RETENTION_DAYS=
+SESSION_TIMEOUT_MINUTES=
+PASSWORD_MIN_LENGTH=
+MFA_REQUIRED_FOR_ADMINS=true
+```
+
+## Business Continuity & Disaster Recovery
+
+- RPO target configurabile per ambiente.
+- RTO target configurabile per ambiente.
+- Cloud SQL automated backups e point-in-time recovery.
+- Cloud Storage bucket versioning e retention policy.
+- Restore test periodico con evidenza in change/audit log.
+- Runbook operativo in `docs/setup/GCP_DEPLOYMENT.md`.
+- Health check: `/api/health`.
+- Readiness check: `/api/ready`.
+- Graceful shutdown, retry/idempotenza webhook e circuit breaker provider predisposti.
+
+## Security architecture
+
+- HTTPS obbligatorio in produzione.
+- Cookie httpOnly, secure, SameSite.
+- Password hashing robusto con bcryptjs nel demo.
+- Rate limiting predisposto in `lib/security`.
+- ORM Prisma e query parametrizzate.
+- Zod validation lato server.
+- Security headers Next.js.
+- CSP/CORS hardening da finalizzare per dominio produzione.
+- Nessun dato carta salvato.
+- Nessun segreto nel repository.
+
+## GDPR e data protection
+
+Sono predisposti: privacy consent, notice version, data retention policy, data subject request, data processing record, legal hold, soft delete/anonymization modes, audit accessi dati personali.
+
+## DORA/NIS2 readiness
+
+Sono predisposti: incident management, ICT third-party provider register, change management, audit log, access review, privileged access log, operational resilience runbook, backup/restore documentation.
+
+## Secure SDLC
+
+- TypeScript strict.
+- Type check.
+- Unit/documentation test.
+- Dependency scanning via `npm audit`.
+- Secret scanning demandata a CI/provider.
+- SAST/container scanning predisposti per CI.
+- SBOM generation da aggiungere in pipeline.
+- Security checklist in `docs/checklists/production-release-checklist.md`.
+
+## Stato MVP
+
+Questa e' una prima versione navigabile end-to-end con dati demo e provider mock. Prima di usare dati reali servono: hardening auth, DB reale Cloud SQL, secret rotation, CSP definitiva, malware scanning, CI/CD controllata e review legale/compliance.

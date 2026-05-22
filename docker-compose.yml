@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: axieme
+      POSTGRES_PASSWORD: axieme
+      POSTGRES_DB: axieme_mga
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U axieme -d axieme_mga"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file: .env.example
+    environment:
+      DATABASE_URL: postgresql://axieme:axieme@postgres:5432/axieme_mga?schema=public
+      PORT: 8080
+    ports:
+      - "3000:8080"
+
+volumes:
+  postgres_data:
