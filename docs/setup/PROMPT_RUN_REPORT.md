@@ -202,3 +202,14 @@ Procedere con Sprint 0/Sprint 1:
 1. caricare il progetto applicativo originale;
 2. creare il primo task brief di sviluppo reale;
 3. mantenere la landing Next.js come placeholder finche' non sara' sostituita dal prodotto.
+
+
+## Vercel deployment
+
+Prima superficie web HARNESS deployata su Vercel:
+
+- Alias: `https://workspace-vitanuova.vercel.app`
+- Deployment: `https://workspace-hturty6xf-vitanuova.vercel.app`
+- Nota: il progetto risulta protetto da Vercel Authentication; usare il link
+  share temporaneo documentato in `docs/setup/VERCEL_DEPLOYMENT.md` oppure
+  modificare le impostazioni Vercel per accesso pubblico stabile.
