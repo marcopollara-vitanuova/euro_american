@@ -37,9 +37,9 @@ npm run build
 ## Deploy eseguito
 
 - Target: production
-- Deployment URL: `https://workspace-hturty6xf-vitanuova.vercel.app`
+- Deployment URL: `https://workspace-7isj7a1sg-vitanuova.vercel.app`
 - Alias: `https://workspace-vitanuova.vercel.app`
-- Inspector: `https://vercel.com/vitanuova/workspace/2Ksqsp3pshHuVFkfWU1DjuNx6MRZ`
+- Inspector: `https://vercel.com/vitanuova/workspace/9yimfBT8gMuaZKkdc4x4qeypz7Ni`
 - Stato Vercel: `READY`
 
 ## Accesso
@@ -47,10 +47,10 @@ npm run build
 Il deploy e' stato verificato con `web_fetch_vercel_url` e risponde `200 OK`.
 Il fetch web generico ritorna `401 Unauthorized`, quindi il progetto Vercel ha
 protezione accessi attiva. Per condivisione temporanea e' disponibile fino al
-2026-05-23 16:50 UTC:
+2026-05-23 16:58 UTC:
 
 ```text
-https://workspace-vitanuova.vercel.app/?_vercel_share=ZwX1tKH57cwUy8rCj8hSVab35r7egzwl
+https://workspace-vitanuova.vercel.app/?_vercel_share=WyLOq5pJbikiOPhd6XC14ZQ6tgvXuhLm
 ```
 
 ## Stato
