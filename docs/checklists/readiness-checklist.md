@@ -15,6 +15,8 @@
 
 ## Open point non bloccanti
 
-- [ ] Decidere se mantenere o rimuovere i backup `.bak` creati durante l'import.
-- [ ] Decidere se dichiarare `pytest` in un file di dipendenze dev o demandarlo all'ambiente cloud.
-- [ ] Estendere `scripts/harness_validate.py` per link Markdown, path canonici e drift prompt/rules.
+- [x] Backup `.bak` rimossi dopo merge e validazione della configurazione HARNESS.
+- [x] `pytest` dichiarato in `requirements-dev.txt` per test cloud riproducibili.
+- [x] `scripts/harness_validate.py` esteso per backup residui, link Markdown locali e path canonici.
+- [x] Prima superficie web Vercel aggiunta con Next.js App Router minimale.
+- [ ] Definire il primo task brief di sviluppo sul progetto applicativo reale dopo caricamento sorgenti.

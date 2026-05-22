@@ -190,14 +190,15 @@ Esito: `APPROVE WITH RESIDUAL OPEN POINTS`.
 
 | ID | Rischio | Stato | Prossima azione |
 |---|---|---|---|
-| RR-001 | Backup `.bak` rumorosi nel repository | open | Decisione umana: mantenere o rimuovere |
-| RR-002 | `pytest` non dichiarato come dipendenza repo | open | Valutare `requirements-dev.txt` o env setup |
-| RR-003 | Validator ancora minimo | open | Estendere in Sprint 1 |
+| RR-001 | Backup `.bak` rumorosi nel repository | closed | Rimossi e bloccati dal validator |
+| RR-002 | `pytest` non dichiarato come dipendenza repo | closed | Aggiunto `requirements-dev.txt` |
+| RR-003 | Validator ancora minimo | closed | Esteso per `.bak`, link Markdown e path canonici |
+| RR-004 | Prima pagina web non deployabile su Vercel | closed | Aggiunta Next.js App Router minimale |
 
 ## Prossimo step
 
 Procedere con Sprint 0/Sprint 1:
 
-1. decidere gestione `.bak`;
-2. decidere se aggiungere dipendenze test dichiarative;
-3. estendere validator per path canonici, link Markdown e drift prompt/rules.
+1. caricare il progetto applicativo originale;
+2. creare il primo task brief di sviluppo reale;
+3. mantenere la landing Next.js come placeholder finche' non sara' sostituita dal prodotto.

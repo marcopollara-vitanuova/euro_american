@@ -17,6 +17,14 @@ def test_required_harness_docs_exist():
         'docs/specs/SDD.md',
         'docs/governance/ai-policy.md',
         'docs/checklists/pr-review-checklist.md',
+        'docs/checklists/readiness-checklist.md',
+        'docs/setup/PROMPT_RUN_REPORT.md',
+        'docs/tasks/001-readiness-checklist-task.md',
+        'requirements-dev.txt',
+        'package.json',
+        'app/layout.js',
+        'app/page.js',
+        'app/globals.css',
     ]
     for rel in required:
         assert (root / rel).exists(), rel

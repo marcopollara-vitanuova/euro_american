@@ -1,0 +1,39 @@
+{
+  "name": "euro-american-harness",
+  "version": "1.0.0",
+  "description": "Questo repository scaffold contiene il sistema operativo per far lavorare un agente AI in modo controllato, verificabile e progressivo.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "python3 scripts/harness_validate.py && python3 -m pytest tests/harness/test_harness_docs.py",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "audit": "npm audit --audit-level=moderate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcopollara-vitanuova/euro_american.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marcopollara-vitanuova/euro_american/issues"
+  },
+  "homepage": "https://github.com/marcopollara-vitanuova/euro_american#readme",
+  "dependencies": {
+    "next": "^16.2.6",
+    "postcss": "8.5.15",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  },
+  "overrides": {
+    "postcss": "8.5.15"
+  },
+  "private": "true",
+  "type": "module"
+}
