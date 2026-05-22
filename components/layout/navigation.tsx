@@ -1,13 +1,56 @@
 import Link from "next/link";
-import { ShieldCheck } from "lucide-react";
+import { Building2, ShieldCheck, Sparkles } from "lucide-react";
 
-const distributorLinks = [
-  ["Dashboard", "/dashboard"], ["Clienti", "/customers"], ["Nuovo preventivo", "/quotes/new"], ["Preventivi", "/quotes"], ["Referral", "/referrals"], ["Polizze", "/policies"], ["Rinnovi", "/renewals"], ["Estratti conto", "/statements"], ["Documenti", "/documents"],
-];
-const adminLinks = [
-  ["MGA dashboard", "/admin/dashboard"], ["Distributori", "/admin/distributors"], ["Utenti", "/admin/users"], ["Prodotti", "/admin/products"], ["Questionari", "/admin/questionnaires"], ["Pricing", "/admin/pricing"], ["Rules", "/admin/rules"], ["Referral", "/admin/referrals"], ["Template", "/admin/templates"], ["Bordereaux", "/admin/bordereaux"], ["Audit log", "/admin/audit-logs"], ["Security", "/admin/security"], ["Compliance", "/admin/compliance"], ["Incidenti", "/admin/incidents"], ["Fornitori ICT", "/admin/third-party-providers"], ["Change requests", "/admin/change-requests"],
+type ShellArea = "admin" | "distributor";
+
+const distributorGroups = [
+  { title: "Oggi", links: [["Dashboard", "/dashboard"], ["Nuovo preventivo", "/quotes/new"]] },
+  { title: "Portafoglio", links: [["Clienti", "/customers"], ["Preventivi", "/quotes"], ["Referral", "/referrals"], ["Polizze", "/policies"]] },
+  { title: "Back office", links: [["Rinnovi", "/renewals"], ["Estratti conto", "/statements"], ["Documenti", "/documents"]] },
 ];
 
-export function Sidebar() {
-  return <aside className="sidebar"><div className="mb-7 flex items-center gap-3"><ShieldCheck className="h-8 w-8 text-teal-300" /><div><div className="font-bold text-white">Axieme MGA</div><div className="text-xs text-slate-400">InsurTech Platform</div></div></div><div className="mb-4 text-xs font-bold uppercase tracking-widest text-slate-500">Portale distributore</div><nav className="space-y-1">{distributorLinks.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}</nav><div className="mb-4 mt-7 text-xs font-bold uppercase tracking-widest text-slate-500">Backend MGA</div><nav className="space-y-1">{adminLinks.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}</nav></aside>;
+const adminGroups = [
+  { title: "Control room", links: [["Dashboard MGA", "/admin/dashboard"], ["Referral queue", "/admin/referrals"], ["Audit log", "/admin/audit-logs"], ["Incidenti", "/admin/incidents"]] },
+  { title: "Configurazione prodotto", links: [["Prodotti", "/admin/products"], ["Questionari", "/admin/questionnaires"], ["Pricing", "/admin/pricing"], ["Regole assuntive", "/admin/rules"], ["Template", "/admin/templates"]] },
+  { title: "Rete e governance", links: [["Distributori", "/admin/distributors"], ["Utenti", "/admin/users"], ["Fornitori ICT", "/admin/third-party-providers"], ["Change requests", "/admin/change-requests"], ["Compliance", "/admin/compliance"], ["Security", "/admin/security"]] },
+  { title: "Rendicontazione", links: [["Bordereaux", "/admin/bordereaux"], ["Estratti conto", "/admin/statements"], ["Documenti", "/admin/documents"]] },
+];
+
+export function Sidebar({ area }: { area: ShellArea }) {
+  const isAdmin = area === "admin";
+  const groups = isAdmin ? adminGroups : distributorGroups;
+  const Icon = isAdmin ? Building2 : Sparkles;
+  return (
+    <aside className="sidebar" aria-label={isAdmin ? "Navigazione Console MGA" : "Navigazione Portale distributore"}>
+      <div className="sidebar-brand">
+        <div className="sidebar-brand-mark">
+          <Icon className="h-6 w-6" aria-hidden />
+        </div>
+        <div>
+          <div className="font-bold text-white">{isAdmin ? "Console MGA" : "Portale Distributore"}</div>
+          <div className="text-xs text-slate-300">Axieme MGA Platform</div>
+        </div>
+      </div>
+
+      <div className="sidebar-context">
+        <ShieldCheck className="h-4 w-4" aria-hidden />
+        <span>{isAdmin ? "Ambiente configurazione e controllo" : "Operativita commerciale e post vendita"}</span>
+      </div>
+
+      <nav className="sidebar-nav">
+        {groups.map((group, index) => (
+          <details key={group.title} className="nav-group" open={index < 2}>
+            <summary>{group.title}</summary>
+            <div className="nav-links">
+              {group.links.map(([label, href]) => (
+                <Link key={href} href={href}>
+                  {label}
+                </Link>
+              ))}
+            </div>
+          </details>
+        ))}
+      </nav>
+    </aside>
+  );
 }

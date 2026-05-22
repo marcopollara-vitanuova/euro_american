@@ -22,9 +22,31 @@ export function LoginForm() {
       setError("Credenziali non valide o account bloccato.");
       return;
     }
-    router.push(search.get("next") ?? "/dashboard");
+    const payload = await response.json();
+    const role = payload.user?.role as string | undefined;
+    const isMgaRole = role ? ["SUPER_ADMIN_AXIEME", "ADMIN_MGA", "UNDERWRITER", "BACK_OFFICE_MGA", "AUDITOR"].includes(role) : false;
+    router.push(search.get("next") ?? (isMgaRole ? "/admin/dashboard" : "/dashboard"));
     router.refresh();
   }
 
-  return <form onSubmit={submit} className="space-y-4"><div><label className="text-sm font-semibold">Email o username</label><input className="input mt-1" value={identifier} onChange={(event) => setIdentifier(event.target.value)} /></div><div><label className="text-sm font-semibold">Password</label><input className="input mt-1" type="password" value={password} onChange={(event) => setPassword(event.target.value)} /></div>{error ? <p className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p> : null}<Button className="w-full" disabled={loading}>{loading ? "Accesso..." : "Accedi"}</Button><div className="rounded-xl bg-slate-50 p-3 text-xs text-slate-600"><strong>Demo:</strong> broker@axieme.test / Password123!<br />admin.mga@axieme.test / Password123!<br />underwriter@axieme.test / Password123!</div></form>;
+  return (
+    <form onSubmit={submit} className="space-y-4">
+      <div>
+        <label className="text-sm font-bold text-slate-900" htmlFor="identifier">Email o username</label>
+        <input id="identifier" className="input mt-1" autoComplete="username" value={identifier} onChange={(event) => setIdentifier(event.target.value)} />
+      </div>
+      <div>
+        <label className="text-sm font-bold text-slate-900" htmlFor="password">Password</label>
+        <input id="password" className="input mt-1" type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} />
+      </div>
+      {error ? <p className="rounded-xl bg-red-50 p-3 text-sm font-semibold text-red-800" role="alert">{error}</p> : null}
+      <Button className="w-full" disabled={loading}>{loading ? "Accesso in corso..." : "Accedi"}</Button>
+      <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs leading-5 text-slate-700">
+        <strong>Profili demo:</strong><br />
+        Console MGA: admin.mga@axieme.test / Password123!<br />
+        Underwriter: underwriter@axieme.test / Password123!<br />
+        Portale broker: broker@axieme.test / Password123!
+      </div>
+    </form>
+  );
 }
