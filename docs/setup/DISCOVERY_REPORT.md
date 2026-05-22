@@ -92,7 +92,7 @@ di battaglia per sprint senza introdurre codice applicativo.
 | G-001 | Il branch di lavoro contiene la configurazione Cursor, ma `origin/main` non la contiene finche' la PR non viene mergiata. | M | Alta | Mergiare la PR dopo review. |
 | G-002 | `pytest` non e' installato nell'ambiente cloud corrente. | B | Media | Documentare comando alternativo o aggiungere env setup se si vogliono test pytest nativi. |
 | G-003 | Le checklist sono template operativi non ancora compilati per una release/progetto reale. | M | Media | Compilare readiness checklist nello sprint di setup. |
-| G-004 | Non esiste ancora un task brief reale per il primo micro-task agentico. | M | Alta | Crearlo da `docs/templates/task-brief-template.md`. |
+| G-004 | Task brief reale per il primo micro-task agentico ora presente in `docs/tasks/001-readiness-checklist-task.md`. | B | Risolta | Usarlo come baseline per il primo micro-task documentale. |
 | G-005 | I file `.bak` sono presenti come backup richiesti durante l'import; possono creare rumore se mantenuti a lungo. | B | Bassa | Decidere se conservarli fino a merge o rimuoverli dopo approvazione. |
 
 ## Rischi principali
@@ -158,8 +158,8 @@ di battaglia per sprint senza introdurre codice applicativo.
   dopo approvazione umana?
 - Open point: installare `pytest` nell'ambiente cloud o continuare con test
   diretti via Python?
-- Open point: quale sara' il primo micro-task reale da descrivere nel task
-  brief?
+- Risolto: il primo micro-task reale e' documentato in
+  `docs/tasks/001-readiness-checklist-task.md`.
 
 ## Prossimo step consigliato
 

@@ -30,3 +30,19 @@ Decisione: accessi, dati personali, deploy, nuove dipendenze e policy richiedono
 Razionale: governance e responsabilità restano umane.
 
 Conseguenze: l'agente deve fermarsi e dichiarare `Decision needed`.
+
+
+---
+
+## ADR-004 - Readiness checklist come primo micro-task documentale
+Status: Accepted
+
+Decisione: il primo micro-task agentico dopo il setup HARNESS e' la compilazione
+di `docs/checklists/readiness-checklist.md` usando lo stato reale del repository.
+
+Razionale: il task e' locale, documentale, verificabile, senza accessi esterni e
+coerente con la fase A0/A1 prevista dalla data access policy.
+
+Conseguenze: la readiness checklist diventa il baseline operativo per Sprint 0 e
+lascia tracciati gli open point non bloccanti prima di qualunque task
+applicativo o integrazione MCP/plugin.
