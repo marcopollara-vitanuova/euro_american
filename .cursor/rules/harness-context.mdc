@@ -1,0 +1,17 @@
+---
+description: Repository-first context loading for HARNESS
+alwaysApply: true
+---
+
+# HARNESS context loading
+
+Before making changes, load the repository context in this order:
+
+1. `AGENT.md`
+2. `PROJECT_CONTEXT.md`
+3. `docs/specs/SDD.md`
+4. `docs/sdd/02-architecture-decision-records.md`
+5. `docs/governance/*.md` when the task touches access, security, compliance, review, or risk
+6. The active task brief or prompt under `docs/prompts/`
+
+Do not invent missing requirements, APIs, credentials, dependencies, or decisions. If required context is absent, record an open point or `Decision needed` before implementing impactful changes.

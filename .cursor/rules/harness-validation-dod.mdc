@@ -1,0 +1,28 @@
+---
+description: Validation, documentation and definition of done
+alwaysApply: true
+---
+
+# Validation and Definition of Done
+
+A task is complete only when changes are consistent with the SDD and the relevant docs/checks are updated.
+
+## Required checks
+
+- Run `python3 scripts/harness_validate.py` before closing repository-governance tasks.
+- Run available tests when the environment provides the needed tooling.
+- If a tool is missing, document the missing tool and the command that could not be run.
+- Verify key files after scaffold/setup work:
+  - `AGENT.md`
+  - `PROJECT_CONTEXT.md`
+  - `docs/specs/SDD.md`
+  - `.cursor/rules/*`
+  - `docs/prompts/00-master-prompt.md`
+
+## Documentation paths
+
+- Prompt files live in `docs/prompts/`.
+- Checklist files live in `docs/checklists/`.
+- Template files live in `docs/templates/`.
+- SDD entrypoint lives in `docs/specs/SDD.md`.
+- Detailed SDD modules live in `docs/sdd/`.

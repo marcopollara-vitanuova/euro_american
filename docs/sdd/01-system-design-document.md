@@ -80,7 +80,7 @@ External Systems
 - Falsa confidenza dell'output AI.
 
 ## 9. Quality gates
-- `python scripts/harness_validate.py`
+- `python3 scripts/harness_validate.py`
 - checklist PR completa;
 - ADR aggiornati;
 - nessun open point critico non risolto;

@@ -1,0 +1,24 @@
+---
+description: Access, data, MCP, security and compliance guardrails
+alwaysApply: true
+---
+
+# Access and security guardrails
+
+Default access class is A0/A1: no external access, local files, mocks, or sandbox only.
+
+## Access policy
+
+- A0 no external access: allowed.
+- A1 local files/mock: allowed.
+- A2 read-only sandbox: requires review.
+- A3 write non-production: forbidden without ADR and approval.
+- A4 production: forbidden in the initial phase.
+
+## Security and compliance
+
+- Never commit secrets, real tokens, private keys, passwords, or personal credentials.
+- Do not use real personal data in prompts, tests, fixtures, or examples without documented privacy review.
+- Use least privilege and dedicated test identities when access is approved.
+- Document purpose, owner, data class, logging, rollback/revocation, and tests before A2+ access.
+- Map critical changes to GDPR, DORA, NIS2, EU AI Act, IVASS, or other applicable controls when relevant.

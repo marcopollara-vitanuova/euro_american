@@ -1,0 +1,8 @@
+---
+description: HARNESS governance guardrails for Cursor agents
+alwaysApply: true
+---
+
+# HARNESS governance
+
+Follow `AGENT.md`, `PROJECT_CONTEXT.md`, `docs/specs/SDD.md`, and the active task brief before editing. Keep access read-only by default, avoid secrets and production data, document open points, and update relevant docs/checklists/tests with every material change.

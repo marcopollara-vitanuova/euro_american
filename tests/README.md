@@ -21,9 +21,20 @@ Costruire un harness per agenti AI che consenta di usare Cursor/Codex/LLM coding
 ├── README.md
 ├── PROJECT_CONTEXT.md
 ├── .cursor/
+│   ├── README.md
+│   ├── mcp.json
 │   ├── rules.md
-│   └── prompts.md
+│   ├── prompts.md
+│   └── rules/
+│       ├── harness-access-security.mdc
+│       ├── harness-context.mdc
+│       ├── harness-governance.mdc
+│       ├── harness-human-review.mdc
+│       ├── harness-sdd-workflow.mdc
+│       └── harness-validation-dod.mdc
 ├── docs/
+│   ├── specs/
+│   │   └── SDD.md
 │   ├── sdd/
 │   │   ├── 00-executive-brief.md
 │   │   ├── 01-system-design-document.md
@@ -36,21 +47,21 @@ Costruire un harness per agenti AI che consenta di usare Cursor/Codex/LLM coding
 │   │   ├── human-in-the-loop.md
 │   │   ├── risk-register.md
 │   │   └── review-model.md
-│   └── prompts/
-│       ├── 00-master-prompt.md
-│       ├── 01-discovery-prompt.md
-│       ├── 02-sdd-generation-prompt.md
-│       ├── 03-implementation-prompt.md
-│       ├── 04-review-prompt.md
-│       └── 05-entropy-cleanup-prompt.md
-├── checklists/
-│   ├── readiness-checklist.md
-│   ├── pr-review-checklist.md
-│   └── production-release-checklist.md
-├── templates/
-│   ├── adr-template.md
-│   ├── task-brief-template.md
-│   └── pr-template.md
+│   ├── prompts/
+│   │   ├── 00-master-prompt.md
+│   │   ├── 01-discovery-prompt.md
+│   │   ├── 02-sdd-generation-prompt.md
+│   │   ├── 03-implementation-prompt.md
+│   │   ├── 04-review-prompt.md
+│   │   └── 05-entropy-cleanup-prompt.md
+│   ├── checklists/
+│   │   ├── readiness-checklist.md
+│   │   ├── pr-review-checklist.md
+│   │   └── production-release-checklist.md
+│   └── templates/
+│       ├── adr-template.md
+│       ├── task-brief-template.md
+│       └── pr-template.md
 ├── skills/
 │   └── harness-sdd/
 │       ├── SKILL.md
@@ -69,4 +80,4 @@ Costruire un harness per agenti AI che consenta di usare Cursor/Codex/LLM coding
 3. Fai eseguire prima discovery e SDD, non codice.
 4. Approva gli ADR e le policy di accesso.
 5. Procedi per micro-task con prompt dedicati.
-6. Ogni output deve aggiornare SDD, ADR, checklists e test.
+6. Ogni output deve aggiornare SDD, ADR, `docs/checklists/` e test.

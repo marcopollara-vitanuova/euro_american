@@ -1,0 +1,35 @@
+---
+description: Human-in-the-loop escalation and review model
+alwaysApply: true
+---
+
+# Human-in-the-loop
+
+Agents may propose, implement in sandbox, document, and self-check. Humans approve critical decisions.
+
+## Escalate as `Decision needed` for
+
+- new access, credentials, MCP, plugins, or external providers;
+- personal data processing;
+- deploys or production changes;
+- security, compliance, logging, or retention changes;
+- large removals or refactors;
+- unapproved dependencies or services.
+
+## Escalation format
+
+```text
+Decision needed:
+- Contesto:
+- Opzioni:
+- Raccomandazione agente:
+- Rischi:
+- Impatto compliance/security:
+- Decisione richiesta:
+```
+
+## Review levels
+
+1. Agent self-review: checks, changed files, risks.
+2. Technical review: quality, tests, architecture.
+3. Governance review: security, privacy, compliance, access.
