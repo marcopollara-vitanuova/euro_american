@@ -48,12 +48,9 @@ l'alias stabile o la dashboard Vercel per ispezionare il deployment corrente.
 
 Il deploy e' stato verificato tramite Vercel MCP/list deployments come `READY` e tramite share URL con risposta `200 OK`.
 Il fetch web generico ritorna `401 Unauthorized`, quindi il progetto Vercel ha
-protezione accessi attiva. Per condivisione temporanea e' disponibile fino al
-2026-05-23 16:58 UTC:
-
-```text
-https://workspace-vitanuova.vercel.app/?_vercel_share=WyLOq5pJbikiOPhd6XC14ZQ6tgvXuhLm
-```
+protezione accessi attiva. Per condivisione temporanea, generare un link share da Vercel quando serve.
+I token share sono temporanei e non devono essere trattati come configurazione
+stabile del repository.
 
 ## Stato
 
