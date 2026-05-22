@@ -208,8 +208,7 @@ Procedere con Sprint 0/Sprint 1:
 
 Prima superficie web HARNESS deployata su Vercel:
 
-- Alias: `https://workspace-vitanuova.vercel.app`
-- Deployment: `https://workspace-7isj7a1sg-vitanuova.vercel.app`
+- Alias stabile: `https://workspace-vitanuova.vercel.app`
 - Nota: il progetto risulta protetto da Vercel Authentication; usare il link
   share temporaneo documentato in `docs/setup/VERCEL_DEPLOYMENT.md` oppure
   modificare le impostazioni Vercel per accesso pubblico stabile.

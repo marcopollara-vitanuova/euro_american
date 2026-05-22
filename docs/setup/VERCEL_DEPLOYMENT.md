@@ -36,15 +36,17 @@ npm run build
 
 ## Deploy eseguito
 
+- Alias stabile: `https://workspace-vitanuova.vercel.app`
+- Branch alias: `https://workspace-git-main-vitanuova.vercel.app`
 - Target: production
-- Deployment URL: `https://workspace-7isj7a1sg-vitanuova.vercel.app`
-- Alias: `https://workspace-vitanuova.vercel.app`
-- Inspector: `https://vercel.com/vitanuova/workspace/9yimfBT8gMuaZKkdc4x4qeypz7Ni`
-- Stato Vercel: `READY`
+- Stato Vercel verificato: `READY`
+
+Gli URL univoci dei singoli deployment cambiano a ogni push su `main`; usare
+l'alias stabile o la dashboard Vercel per ispezionare il deployment corrente.
 
 ## Accesso
 
-Il deploy e' stato verificato con `web_fetch_vercel_url` e risponde `200 OK`.
+Il deploy e' stato verificato tramite Vercel MCP/list deployments come `READY` e tramite share URL con risposta `200 OK`.
 Il fetch web generico ritorna `401 Unauthorized`, quindi il progetto Vercel ha
 protezione accessi attiva. Per condivisione temporanea e' disponibile fino al
 2026-05-23 16:58 UTC:
