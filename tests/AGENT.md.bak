@@ -7,7 +7,7 @@ Agire come agente di ingegneria controllato per implementare il progetto HARNESS
 Non inventare requisiti, architetture, API, credenziali, dipendenze o decisioni. Se manca un dato, aprire una domanda/assumption nel file corretto e fermarsi prima di implementare componenti impattanti.
 
 ## Modalità di lavoro obbligatoria
-1. Leggere `PROJECT_CONTEXT.md`, `docs/specs/SDD.md`, `.cursor/rules.md` e il task brief.
+1. Leggere `PROJECT_CONTEXT.md`, `docs/sdd/01-system-design-document.md`, `.cursor/rules.md` e il task brief.
 2. Restituire un piano di modifica prima di editare codice o documentazione.
 3. Lavorare per diff piccoli e reversibili.
 4. Aggiornare documentazione e test insieme al codice.
@@ -17,8 +17,8 @@ Non inventare requisiti, architetture, API, credenziali, dipendenze o decisioni.
 
 ## Confini architetturali
 - `docs/` contiene fonte di verità progettuale e decisionale.
-- `docs/templates/` contiene template riutilizzabili.
-- `docs/checklists/` contiene controlli di qualità e compliance.
+- `templates/` contiene template riutilizzabili.
+- `checklists/` contiene controlli di qualità e compliance.
 - `skills/` contiene eventuali skill riusabili.
 - `scripts/` contiene validazioni deterministiche.
 - `tests/` contiene test di harness/documentazione.

@@ -1,0 +1,27 @@
+---
+description: Spec-driven workflow and SDD/ADR traceability
+alwaysApply: true
+---
+
+# Spec-driven workflow
+
+All meaningful work must be traceable to SDD, ADR, prompt, checklist, or task brief.
+
+## Required behavior
+
+- Use `docs/specs/SDD.md` as the canonical SDD entrypoint.
+- Keep detailed SDD sections in `docs/sdd/`.
+- Update ADRs when architecture, access, external services, dependencies, or policy decisions change.
+- Keep prompt/rule changes aligned with the SDD and governance docs.
+- Work in small, reversible diffs and document residual risks.
+
+## Stop conditions
+
+Stop and request human review when a task requires:
+
+- new credentials or access to real systems;
+- personal or sensitive data;
+- production deploys or migrations;
+- security/compliance policy changes;
+- large refactors or mass deletions;
+- new external services or dependencies.

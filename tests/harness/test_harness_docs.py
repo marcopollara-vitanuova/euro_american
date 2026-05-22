@@ -7,8 +7,16 @@ def test_required_harness_docs_exist():
         'AGENT.md',
         'PROJECT_CONTEXT.md',
         '.cursor/rules.md',
-        'docs/sdd/01-system-design-document.md',
+        '.cursor/prompts.md',
+        '.cursor/mcp.json',
+        '.cursor/rules/harness-context.mdc',
+        '.cursor/rules/harness-sdd-workflow.mdc',
+        '.cursor/rules/harness-access-security.mdc',
+        '.cursor/rules/harness-human-review.mdc',
+        '.cursor/rules/harness-validation-dod.mdc',
+        'docs/specs/SDD.md',
         'docs/governance/ai-policy.md',
+        'docs/checklists/pr-review-checklist.md',
     ]
     for rel in required:
         assert (root / rel).exists(), rel

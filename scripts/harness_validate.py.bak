@@ -6,18 +6,11 @@ REQUIRED = [
     'AGENT.md',
     'PROJECT_CONTEXT.md',
     '.cursor/rules.md',
-    '.cursor/prompts.md',
-    '.cursor/mcp.json',
-    '.cursor/rules/harness-context.mdc',
-    '.cursor/rules/harness-sdd-workflow.mdc',
-    '.cursor/rules/harness-access-security.mdc',
-    '.cursor/rules/harness-human-review.mdc',
-    '.cursor/rules/harness-validation-dod.mdc',
-    'docs/specs/SDD.md',
+    'docs/sdd/01-system-design-document.md',
     'docs/sdd/02-architecture-decision-records.md',
     'docs/sdd/03-data-access-and-mcp-policy.md',
     'docs/governance/ai-policy.md',
-    'docs/checklists/pr-review-checklist.md',
+    'checklists/pr-review-checklist.md',
 ]
 FORBIDDEN_MARKERS = ['TODO_SECRET', 'REAL_TOKEN', 'PASSWORD=', 'PRIVATE_KEY']
 
