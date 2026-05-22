@@ -22,9 +22,19 @@ def test_required_harness_docs_exist():
         'docs/tasks/001-readiness-checklist-task.md',
         'requirements-dev.txt',
         'package.json',
-        'app/layout.js',
-        'app/page.js',
+        'app/layout.tsx',
+        'app/page.tsx',
         'app/globals.css',
+        'public/robots.txt',
+        'prisma/schema.prisma',
+        'prisma.config.ts',
+        'prisma/seed.ts',
+        '.env.example',
+        'Dockerfile',
+        'docker-compose.yml',
+        'docs/setup/GCP_DEPLOYMENT.md',
+        'proxy.ts',
+        'tsconfig.json',
     ]
     for rel in required:
         assert (root / rel).exists(), rel

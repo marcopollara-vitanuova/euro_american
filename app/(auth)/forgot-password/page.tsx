@@ -1,0 +1,2 @@
+import { Button } from "@/components/ui/button";
+export default function Page() { return <main className="flex min-h-screen items-center justify-center bg-slate-100 p-6"><section className="card max-w-md p-8"><h1 className="text-2xl font-bold">Password dimenticata</h1><p className="mt-2 text-sm text-slate-500">Flusso mock sicuro: token a scadenza, audit evento e rate limit lato API.</p><input className="input mt-5" placeholder="email@domain.test" /><Button className="mt-4 w-full">Invia richiesta mock</Button></section></main>; }

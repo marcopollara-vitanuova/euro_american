@@ -1,0 +1,898 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum RoleCode {
+  SUPER_ADMIN_AXIEME
+  ADMIN_MGA
+  UNDERWRITER
+  BACK_OFFICE_MGA
+  BROKER_ADMIN
+  DISTRIBUTOR_USER
+  VIEWER
+  AUDITOR
+}
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  PASSWORD_RESET_REQUIRED
+  LOCKED
+  DISABLED
+}
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  SUSPENDED
+  ARCHIVED
+  DISCONTINUED
+}
+enum CustomerType {
+  PERSON
+  COMPANY
+  PROFESSIONAL
+  SOLE_PROPRIETOR
+  ASSOCIATION
+}
+enum QuoteStatus {
+  DRAFT
+  QUESTIONNAIRE_COMPLETED
+  QUOTABLE
+  QUOTED
+  REFERRAL_REQUIRED
+  REFERRAL_IN_REVIEW
+  INFO_REQUESTED
+  APPROVED_BY_UNDERWRITER
+  REJECTED_BY_UNDERWRITER
+  DECLINED
+  SENT_TO_CUSTOMER
+  ACCEPTED_BY_CUSTOMER
+  PAYMENT_PENDING
+  PAID
+  CONVERTED_TO_POLICY
+  EXPIRED
+  CANCELLED
+}
+enum ReferralStatus {
+  OPEN
+  ASSIGNED
+  INFO_REQUESTED
+  INFO_PROVIDED
+  IN_REVIEW
+  APPROVED
+  APPROVED_WITH_CHANGES
+  REJECTED
+  CANCELLED
+  CLOSED
+}
+enum PolicyStatus {
+  ISSUING
+  ISSUED_TO_SIGN
+  SENT_TO_SIGNATURE
+  SIGNED
+  ACTIVE
+  CANCELLED
+  SUSPENDED
+  EXPIRED
+  RENEWED
+  NOT_RENEWED
+}
+enum PaymentStatus {
+  NOT_REQUESTED
+  LINK_GENERATED
+  LINK_SENT
+  PENDING
+  AUTHORIZED
+  CAPTURED
+  FAILED
+  CANCELLED
+  EXPIRED
+  REFUNDED
+  TECHNICALLY_RECONCILED
+  ACCOUNTING_RECONCILED
+}
+enum SignatureStatus {
+  NOT_STARTED
+  REQUEST_CREATED
+  SENT_TO_CUSTOMER
+  OTP_SENT
+  SIGNED
+  REFUSED
+  EXPIRED
+  ERROR
+  CANCELLED
+}
+enum DocumentType {
+  PROPOSAL
+  QUESTIONNAIRE
+  DEMANDS_NEEDS
+  SET_INFORMATIVO
+  DIP
+  DIP_AGGIUNTIVO
+  POLICY_BOOKLET
+  POLICY
+  ATTACHMENT
+  RECEIPT
+  NO_CLAIMS_DECLARATION
+  CUSTOMER_COMMUNICATION
+  BORDEREAU
+  ACCOUNT_STATEMENT
+}
+enum RuleType {
+  ELIGIBILITY
+  BLOCKING
+  REFERRAL
+  WARNING
+  PRICING
+  DOCUMENT_REQUIRED
+}
+enum IncidentSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+enum IncidentStatus {
+  DETECTED
+  TRIAGED
+  CONTAINED
+  INVESTIGATING
+  RECOVERING
+  RESOLVED
+  CLOSED
+  REPORTABLE
+  NOT_REPORTABLE
+}
+enum ChangeRequestStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  SCHEDULED
+  PUBLISHED
+  ROLLED_BACK
+}
+enum RetentionDeletionMode {
+  SOFT_DELETE
+  HARD_DELETE
+  ANONYMIZE
+  ARCHIVE
+}
+enum BordereauStatus {
+  DRAFT
+  GENERATED
+  VALIDATED
+  SENT_TO_CARRIER
+  ACCEPTED
+  REJECTED
+  REGENERATED
+  CANCELLED
+}
+enum RenewalStatus {
+  TO_MANAGE
+  RENEWAL_QUOTE_GENERATED
+  SENT_TO_CUSTOMER
+  PAYMENT_PENDING
+  RENEWED
+  NOT_RENEWED
+  EXPIRED
+  REFERRAL_REQUIRED
+  CANCELLED
+}
+enum FileScanStatus {
+  PENDING
+  CLEAN
+  INFECTED
+  FAILED
+  SKIPPED
+}
+
+model Tenant {
+  id String @id @default(cuid())
+  name String
+  region String
+  status String @default("ACTIVE")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model User {
+  id String @id @default(cuid())
+  tenantId String
+  distributorId String?
+  email String @unique
+  username String @unique
+  passwordHash String
+  firstName String
+  lastName String
+  status UserStatus @default(ACTIVE)
+  mfaEnabled Boolean @default(false)
+  lastLoginAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model Role {
+  id String @id @default(cuid())
+  code RoleCode @unique
+  name String
+}
+model Permission {
+  id String @id @default(cuid())
+  code String @unique
+  description String?
+}
+model UserRole {
+  id String @id @default(cuid())
+  userId String
+  roleId String
+  tenantId String
+}
+model RolePermission {
+  id String @id @default(cuid())
+  roleId String
+  permissionId String
+}
+model Distributor {
+  id String @id @default(cuid())
+  tenantId String
+  parentDistributorId String?
+  name String
+  vatNumber String?
+  taxCode String?
+  intermediaryCode String?
+  rui String?
+  status String @default("ACTIVE")
+  commissionRate Decimal?
+  limitsJson Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model DistributorHierarchy {
+  id String @id @default(cuid())
+  tenantId String
+  ancestorDistributorId String
+  descendantDistributorId String
+  depth Int
+}
+model Address {
+  id String @id @default(cuid())
+  tenantId String
+  ownerType String
+  ownerId String
+  line1 String
+  city String
+  province String
+  postalCode String
+  country String @default("IT")
+}
+model Customer {
+  id String @id @default(cuid())
+  tenantId String
+  distributorId String
+  ownerUserId String
+  type CustomerType
+  displayName String
+  taxCode String?
+  vatNumber String?
+  email String?
+  pec String?
+  phone String?
+  isDeleted Boolean @default(false)
+  retentionUntil DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model Carrier {
+  id String @id @default(cuid())
+  tenantId String
+  name String
+  status String @default("ACTIVE")
+}
+model Product {
+  id String @id @default(cuid())
+  tenantId String
+  code String
+  name String
+  lineOfBusiness String
+  status ProductStatus @default(DRAFT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model ProductVersion {
+  id String @id @default(cuid())
+  productId String
+  version String
+  validFrom DateTime
+  validTo DateTime?
+  configJson Json
+  status ProductStatus @default(DRAFT)
+}
+model ProductDistributorPermission {
+  id String @id @default(cuid())
+  tenantId String
+  productId String
+  distributorId String
+  enabled Boolean @default(true)
+}
+model ProductCarrier {
+  id String @id @default(cuid())
+  productId String
+  carrierId String
+  capacityDescription String?
+}
+model Questionnaire {
+  id String @id @default(cuid())
+  tenantId String
+  name String
+  code String
+}
+model QuestionnaireVersion {
+  id String @id @default(cuid())
+  questionnaireId String
+  version String
+  status String @default("DRAFT")
+  snapshotJson Json
+  publishedAt DateTime?
+}
+model QuestionnaireSection {
+  id String @id @default(cuid())
+  questionnaireVersionId String
+  code String
+  title String
+  sortOrder Int
+}
+model Question {
+  id String @id @default(cuid())
+  sectionId String
+  code String
+  label String
+  helpText String?
+  fieldType String
+  required Boolean @default(false)
+  sortOrder Int
+  validationJson Json?
+  visibilityConditionJson Json?
+  referralRuleJson Json?
+  pricingMappingKey String?
+  documentMappingKey String?
+}
+model QuestionOption {
+  id String @id @default(cuid())
+  questionId String
+  value String
+  label String
+  sortOrder Int
+}
+model QuestionCondition {
+  id String @id @default(cuid())
+  questionId String
+  conditionJson Json
+}
+model QuestionValidation {
+  id String @id @default(cuid())
+  questionId String
+  validationJson Json
+}
+model Quote {
+  id String @id @default(cuid())
+  tenantId String
+  customerId String
+  distributorId String
+  ownerUserId String
+  productId String
+  productVersionId String
+  questionnaireVersionId String
+  pricingVersionId String
+  status QuoteStatus @default(DRAFT)
+  selectedLimit Decimal?
+  selectedDeductible Decimal?
+  grossPremium Decimal?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model QuoteAnswer {
+  id String @id @default(cuid())
+  quoteId String
+  questionCode String
+  questionLabelSnapshot String
+  answerJson Json
+  answeredByUserId String
+  answeredAt DateTime @default(now())
+}
+model QuoteOption {
+  id String @id @default(cuid())
+  quoteId String
+  code String
+  label String
+  selected Boolean @default(false)
+  premiumDelta Decimal?
+}
+model PricingVersion {
+  id String @id @default(cuid())
+  tenantId String
+  productId String
+  version String
+  status String @default("DRAFT")
+  configJson Json
+  publishedAt DateTime?
+}
+model RatingTable {
+  id String @id @default(cuid())
+  pricingVersionId String
+  code String
+  name String
+  dimensionsJson Json
+}
+model RatingRow {
+  id String @id @default(cuid())
+  ratingTableId String
+  matchJson Json
+  resultJson Json
+  sortOrder Int
+}
+model PricingCalculation {
+  id String @id @default(cuid())
+  quoteId String
+  productId String
+  productVersionId String
+  pricingVersionId String
+  inputJson Json
+  outputJson Json
+  rulesAppliedJson Json
+  requestId String
+  correlationId String
+  calculatedByUserId String
+  createdAt DateTime @default(now())
+}
+model UnderwritingRule {
+  id String @id @default(cuid())
+  tenantId String
+  productId String?
+  pricingVersionId String?
+  code String
+  type RuleType
+  conditionJson Json
+  message String
+  active Boolean @default(true)
+}
+model Referral {
+  id String @id @default(cuid())
+  tenantId String
+  quoteId String
+  status ReferralStatus @default(OPEN)
+  priority String @default("MEDIUM")
+  assignedToUserId String?
+  slaDueAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model ReferralReason {
+  id String @id @default(cuid())
+  referralId String
+  code String
+  label String
+}
+model ReferralMessage {
+  id String @id @default(cuid())
+  referralId String
+  userId String
+  message String
+  createdAt DateTime @default(now())
+}
+model Policy {
+  id String @id @default(cuid())
+  tenantId String
+  quoteId String
+  customerId String
+  productId String
+  policyNumber String @unique
+  status PolicyStatus @default(ISSUING)
+  inceptionDate DateTime
+  expiryDate DateTime
+  grossPremium Decimal
+  createdAt DateTime @default(now())
+}
+model PolicyTerm {
+  id String @id @default(cuid())
+  policyId String
+  termNumber Int
+  inceptionDate DateTime
+  expiryDate DateTime
+  status String
+}
+model Renewal {
+  id String @id @default(cuid())
+  policyId String
+  status RenewalStatus @default(TO_MANAGE)
+  dueDate DateTime
+}
+model DocumentTemplate {
+  id String @id @default(cuid())
+  tenantId String
+  code String
+  name String
+  type DocumentType
+}
+model DocumentTemplateVersion {
+  id String @id @default(cuid())
+  templateId String
+  version String
+  content String
+  status String @default("DRAFT")
+}
+model Document {
+  id String @id @default(cuid())
+  tenantId String
+  entityType String
+  entityId String
+  type DocumentType
+  name String
+  storageKey String
+  hash String
+  templateVersionId String?
+  createdByUserId String
+  createdAt DateTime @default(now())
+}
+model FileUpload {
+  id String @id @default(cuid())
+  tenantId String
+  documentId String?
+  originalName String
+  storedName String
+  mimeType String
+  sizeBytes Int
+  hash String
+  scanStatus FileScanStatus @default(PENDING)
+  uploadedByUserId String
+  createdAt DateTime @default(now())
+}
+model FileScanResult {
+  id String @id @default(cuid())
+  fileUploadId String
+  status FileScanStatus
+  engine String?
+  detailsJson Json?
+  scannedAt DateTime?
+}
+model Payment {
+  id String @id @default(cuid())
+  tenantId String
+  quoteId String?
+  policyId String?
+  status PaymentStatus @default(NOT_REQUESTED)
+  amount Decimal
+  currency String @default("EUR")
+  providerPaymentId String?
+  idempotencyKey String?
+  createdAt DateTime @default(now())
+}
+model PaymentEvent {
+  id String @id @default(cuid())
+  paymentId String
+  providerEventId String
+  status PaymentStatus
+  rawPayloadJson Json
+  createdAt DateTime @default(now())
+}
+model ReconciliationRecord {
+  id String @id @default(cuid())
+  tenantId String
+  paymentId String
+  policyNumber String
+  reconciliationKey String
+  status String @default("TO_RECONCILE")
+}
+model SignatureRequest {
+  id String @id @default(cuid())
+  tenantId String
+  policyId String
+  status SignatureStatus @default(NOT_STARTED)
+  providerRequestId String?
+  expiresAt DateTime?
+}
+model SignatureEvent {
+  id String @id @default(cuid())
+  signatureRequestId String
+  providerEventId String
+  status SignatureStatus
+  rawPayloadJson Json
+  createdAt DateTime @default(now())
+}
+model AccountStatement {
+  id String @id @default(cuid())
+  tenantId String
+  distributorId String
+  period String
+  status String @default("DRAFT")
+  generatedAt DateTime?
+}
+model AccountStatementRow {
+  id String @id @default(cuid())
+  statementId String
+  rowJson Json
+}
+model BordereauExport {
+  id String @id @default(cuid())
+  tenantId String
+  carrierId String?
+  period String
+  type String
+  status BordereauStatus @default(DRAFT)
+  generatedAt DateTime?
+}
+model BordereauExportRow {
+  id String @id @default(cuid())
+  bordereauExportId String
+  rowJson Json
+}
+model AuditLog {
+  id String @id @default(cuid())
+  tenantId String
+  userId String?
+  role String?
+  action String
+  entityType String
+  entityId String
+  timestamp DateTime @default(now())
+  ipAddress String?
+  userAgent String?
+  requestId String
+  correlationId String
+  beforeJson Json?
+  afterJson Json?
+  reason String?
+  riskLevel String
+  success Boolean
+  integrityHash String?
+  previousHash String?
+}
+model LoginAttempt {
+  id String @id @default(cuid())
+  tenantId String?
+  identifier String
+  success Boolean
+  ipAddress String?
+  userAgent String?
+  reason String?
+  createdAt DateTime @default(now())
+}
+model UserSession {
+  id String @id @default(cuid())
+  userId String
+  tenantId String
+  revoked Boolean @default(false)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+model MfaFactor {
+  id String @id @default(cuid())
+  userId String
+  type String
+  secretHash String?
+  enabled Boolean @default(false)
+  createdAt DateTime @default(now())
+}
+model AccessReview {
+  id String @id @default(cuid())
+  tenantId String
+  scope String
+  status String
+  dueAt DateTime
+}
+model PrivilegedAccessLog {
+  id String @id @default(cuid())
+  tenantId String
+  userId String
+  action String
+  reason String
+  createdAt DateTime @default(now())
+}
+model ImpersonationSession {
+  id String @id @default(cuid())
+  tenantId String
+  superAdminUserId String
+  targetUserId String
+  reason String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+model SecurityIncident {
+  id String @id @default(cuid())
+  tenantId String
+  title String
+  description String
+  severity IncidentSeverity
+  status IncidentStatus
+  detectedAt DateTime
+  reportedAt DateTime?
+  resolvedAt DateTime?
+  category String?
+  affectedSystems Json?
+  affectedUsersCount Int?
+  affectedRecordsCount Int?
+  dataBreachSuspected Boolean @default(false)
+  businessImpact String?
+  rootCause String?
+  ownerUserId String?
+}
+model IncidentEvent {
+  id String @id @default(cuid())
+  incidentId String
+  eventType String
+  description String
+  createdAt DateTime @default(now())
+}
+model IncidentEvidence {
+  id String @id @default(cuid())
+  incidentId String
+  documentId String?
+  description String?
+}
+model IncidentTask {
+  id String @id @default(cuid())
+  incidentId String
+  assigneeUserId String?
+  title String
+  status String @default("OPEN")
+}
+model IctThirdPartyProvider {
+  id String @id @default(cuid())
+  tenantId String
+  name String
+  serviceType String
+  criticality String
+  supportsCriticalOrImportantFunction Boolean @default(false)
+  dataProcessed String?
+  countriesOfProcessing Json?
+  subprocessors Json?
+  contractStart DateTime?
+  contractEnd DateTime?
+  sla String?
+  rto String?
+  rpo String?
+  securityCertifications Json?
+  dpiaRequired Boolean @default(false)
+  dpaSigned Boolean @default(false)
+  exitPlanAvailable Boolean @default(false)
+  lastRiskAssessmentAt DateTime?
+  status String @default("ACTIVE")
+}
+model IctService {
+  id String @id @default(cuid())
+  providerId String
+  name String
+  criticality String
+}
+model IctContract {
+  id String @id @default(cuid())
+  providerId String
+  contractJson Json
+}
+model IctRiskAssessment {
+  id String @id @default(cuid())
+  providerId String
+  residualRisk String
+  evidenceJson Json?
+  assessedAt DateTime @default(now())
+}
+model IctExitPlan {
+  id String @id @default(cuid())
+  providerId String
+  planJson Json
+  status String @default("DRAFT")
+}
+model ChangeRequest {
+  id String @id @default(cuid())
+  tenantId String
+  title String
+  entityType String
+  entityId String
+  status ChangeRequestStatus @default(DRAFT)
+  beforeJson Json?
+  afterJson Json?
+  requestedByUserId String
+  createdAt DateTime @default(now())
+}
+model ChangeApproval {
+  id String @id @default(cuid())
+  changeRequestId String
+  approverUserId String
+  decision String
+  reason String?
+  decidedAt DateTime @default(now())
+}
+model ConfigurationVersion {
+  id String @id @default(cuid())
+  tenantId String
+  entityType String
+  entityId String
+  version String
+  configJson Json
+  publishedAt DateTime?
+}
+model PrivacyConsent {
+  id String @id @default(cuid())
+  tenantId String
+  customerId String
+  noticeVersionId String
+  accepted Boolean
+  acceptedAt DateTime?
+}
+model PrivacyNoticeVersion {
+  id String @id @default(cuid())
+  tenantId String
+  version String
+  content String
+  publishedAt DateTime?
+}
+model DataRetentionPolicy {
+  id String @id @default(cuid())
+  tenantId String
+  entityType String
+  retentionPeriodDays Int
+  legalHold Boolean @default(false)
+  deletionMode RetentionDeletionMode
+  anonymizationMode String?
+  approvalRequired Boolean @default(true)
+}
+model DataSubjectRequest {
+  id String @id @default(cuid())
+  tenantId String
+  customerId String
+  type String
+  status String @default("RECEIVED")
+  receivedAt DateTime @default(now())
+  completedAt DateTime?
+}
+model DataProcessingRecord {
+  id String @id @default(cuid())
+  tenantId String
+  purpose String
+  legalBasis String
+  dataCategories Json
+  retentionPolicyId String?
+}
+model LegalHold {
+  id String @id @default(cuid())
+  tenantId String
+  reason String
+  status String @default("ACTIVE")
+  createdAt DateTime @default(now())
+}
+model LegalHoldEntity {
+  id String @id @default(cuid())
+  legalHoldId String
+  entityType String
+  entityId String
+}
+model SecuritySetting {
+  id String @id @default(cuid())
+  tenantId String
+  key String
+  valueJson Json
+  updatedAt DateTime @updatedAt
+}
+model ApiRequestLog {
+  id String @id @default(cuid())
+  tenantId String?
+  userId String?
+  endpoint String
+  method String
+  statusCode Int
+  durationMs Int
+  requestId String
+  correlationId String
+  createdAt DateTime @default(now())
+}
+model WebhookEvent {
+  id String @id @default(cuid())
+  tenantId String
+  provider String
+  providerEventId String
+  signatureValid Boolean
+  rawPayloadJson Json
+  processed Boolean @default(false)
+  createdAt DateTime @default(now())
+}

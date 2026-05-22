@@ -1,18 +1,25 @@
 {
-  "name": "euro-american-harness",
-  "version": "1.0.0",
-  "description": "Questo repository scaffold contiene il sistema operativo per far lavorare un agente AI in modo controllato, verificabile e progressivo.",
+  "name": "axieme-mga-platform",
+  "version": "0.1.0",
+  "description": "Axieme MGA Platform - InsurTech modular monolith for underwriting agencies.",
   "main": "index.js",
   "directories": {
     "doc": "docs",
     "test": "tests"
   },
   "scripts": {
-    "test": "python3 scripts/harness_validate.py && python3 -m pytest tests/harness/test_harness_docs.py",
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run prisma:generate && next build",
     "start": "next start",
-    "audit": "npm audit --audit-level=moderate"
+    "lint": "next build",
+    "typecheck": "npm run prisma:generate && tsc --noEmit",
+    "test": "python3 scripts/harness_validate.py && python3 -m pytest tests/harness/test_harness_docs.py && npm run typecheck",
+    "test:security": "npm audit --audit-level=moderate && python3 scripts/harness_validate.py",
+    "prisma:generate": "DATABASE_URL=${DATABASE_URL:-postgresql://axieme:axieme@localhost:5432/axieme_mga?schema=public} prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:studio": "prisma studio",
+    "prisma:validate": "prisma validate"
   },
   "repository": {
     "type": "git",
@@ -26,14 +33,34 @@
   },
   "homepage": "https://github.com/marcopollara-vitanuova/euro_american#readme",
   "dependencies": {
+    "@prisma/client": "^7.8.0",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@tailwindcss/postcss": "^4.3.0",
+    "bcryptjs": "^3.0.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.16.0",
+    "nanoid": "^5.1.11",
     "next": "^16.2.6",
     "postcss": "8.5.15",
     "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^4.3.0",
+    "zod": "^4.4.3"
   },
   "overrides": {
-    "postcss": "8.5.15"
+    "postcss": "8.5.15",
+    "@hono/node-server": "1.19.13"
   },
-  "private": "true",
-  "type": "module"
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
+    "prisma": "^7.8.0",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3"
+  }
 }
