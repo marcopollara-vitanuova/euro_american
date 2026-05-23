@@ -17,9 +17,9 @@ export function DocumentSignedUrlButton({ documentId }: { documentId: string }) 
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="grid max-w-[24rem] gap-2">
       <Button size="sm" variant="outline" onClick={generate} disabled={loading}>{loading ? "Genero..." : "Signed URL"}</Button>
-      {url ? <span className="text-xs font-semibold text-slate-700">{url}</span> : null}
+      {url ? <code className="block max-w-full break-all rounded-lg bg-slate-50 p-2 text-[11px] font-semibold leading-4 text-slate-700">{url}</code> : null}
     </div>
   );
 }
