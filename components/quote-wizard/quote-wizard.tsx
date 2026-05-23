@@ -16,6 +16,9 @@ export function QuoteWizard({ products, customers }: { products: Product[]; cust
   const [customerId, setCustomerId] = useState(customers[0].id);
   const [answers, setAnswers] = useState({ turnover_total: 180000, limit_of_indemnity: 1000000, claims_last_5_years: 0, company_refused: false, territory: "Italia", special_activity_turnover: 15000 });
   const [quoteId, setQuoteId] = useState<string | null>(null);
+  const [paymentId, setPaymentId] = useState<string | null>(null);
+  const [paymentCaptured, setPaymentCaptured] = useState(false);
+  const [policyId, setPolicyId] = useState<string | null>(null);
   const [pricingResult, setPricingResult] = useState<PricingResult | null>(null);
   const [events, setEvents] = useState<WizardEvent[]>([]);
   const [loading, setLoading] = useState<string | null>(null);
@@ -77,12 +80,23 @@ export function QuoteWizard({ products, customers }: { products: Product[]; cust
     });
   }
 
-  async function callQuoteAction(path: string, success: WizardEvent) {
+  async function callQuoteAction(path: string, success: (payload: any) => WizardEvent) {
     if (!quoteId) return;
     await runAction(path, async () => {
       const response = await fetch(`/api/quotes/${quoteId}/${path}`, { method: "POST" });
       if (!response.ok) throw new Error(path);
-      return success;
+      const payload = await response.json();
+      if (path === "payment-link") setPaymentId(payload.id);
+      if (path === "issue-policy") setPolicyId(payload.id);
+      return success(payload);
+    });
+  }
+
+  async function callPath(path: string, success: (payload: any) => WizardEvent) {
+    await runAction(path, async () => {
+      const response = await fetch(path, { method: "POST" });
+      if (!response.ok) throw new Error(path);
+      return success(await response.json());
     });
   }
 
@@ -161,9 +175,11 @@ export function QuoteWizard({ products, customers }: { products: Product[]; cust
               <div className="card-soft p-4"><strong>Premio lordo</strong><p>{formatCurrency(displayedResult.grossPremium)}</p></div>
             </div>
             <div className="mt-5 flex flex-wrap gap-3">
-              <Button disabled={!quoteId || loading === "generate-proposal"} onClick={() => callQuoteAction("generate-proposal", { label: "Proposta PDF mock", detail: "Documento generato e audit registrato", tone: "green" })}>Genera proposta</Button>
-              <Button variant="secondary" disabled={!quoteId || loading === "payment-link"} onClick={() => callQuoteAction("payment-link", { label: "Payment link mock", detail: "Link pagamento simulato creato", tone: "blue" })}>Payment link</Button>
-              <Button variant="outline" disabled={!quoteId || loading === "issue-policy"} onClick={() => callQuoteAction("issue-policy", { label: "Polizza emessa", detail: "Emissione demo completata", tone: "green" })}>Emetti polizza</Button>
+              <Button disabled={!quoteId || loading === "generate-proposal"} onClick={() => callQuoteAction("generate-proposal", (payload) => ({ label: "Proposta PDF mock", detail: `${payload.document.name} generata`, tone: "green" }))}>Genera proposta</Button>
+              <Button variant="secondary" disabled={!quoteId || loading === "payment-link"} onClick={() => callQuoteAction("payment-link", (payload) => ({ label: "Payment link mock", detail: `${payload.id} creato`, tone: "blue" }))}>Payment link</Button>
+              <Button variant="outline" disabled={!paymentId || loading === `/api/payments/${paymentId}/simulate-success`} onClick={() => paymentId && callPath(`/api/payments/${paymentId}/simulate-success`, (payload) => { setPaymentCaptured(true); return { label: "Pagamento simulato", detail: `${payload.id} ${payload.status}`, tone: "green" }; })}>Simula pagamento</Button>
+              <Button variant="outline" disabled={!quoteId || !paymentCaptured || loading === "issue-policy"} onClick={() => callQuoteAction("issue-policy", (payload) => ({ label: "Polizza emessa", detail: `${payload.policyNumber} creata`, tone: "green" }))}>Emetti polizza</Button>
+              <Button variant="outline" disabled={!policyId || loading === `/api/policies/${policyId}/signature-request`} onClick={() => policyId && callPath(`/api/policies/${policyId}/signature-request`, (payload) => ({ label: "Firma OTP mock", detail: `${payload.id} inviata via ${payload.otpChannel}`, tone: "green" }))}>Firma OTP</Button>
             </div>
           </div>
         )}

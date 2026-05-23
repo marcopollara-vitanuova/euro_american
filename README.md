@@ -94,6 +94,12 @@ Nota architetturale: le route admin sono esposte come `/admin/...` per evitare c
 
 Login -> Dashboard -> Cliente -> Nuovo preventivo -> Prodotto -> Questionario dinamico -> Calcolo premio/referral/declined -> Proposta PDF mock -> Payment link mock -> Emissione polizza -> Firma OTP mock -> Documenti -> Audit log.
 
+Flussi operativi attualmente navigabili:
+
+- **Console MGA**: dashboard operativa, coda referral, dettaglio referral con azioni underwriter, audit, incidenti, security/compliance e configuratori base.
+- **Portale Distributore**: dashboard con to-do e KPI, CRUD cliente demo, dettaglio cliente, quote wizard a 4 step, dettaglio preventivo con tab e azioni, archivio documenti con signed URL mock, dettaglio polizza.
+- **Quote lifecycle**: creazione preventivo, salvataggio risposte, calcolo premio/referral, generazione proposta PDF mock, payment link mock, simulazione pagamento, emissione polizza, firma OTP mock e audit runtime.
+
 ## API security
 
 Tutte le API non pubbliche passano da middleware sessione e guard applicativi. Gli endpoint pubblici sono limitati a login, password reset mock, health/readiness e webhook mock. Gli input principali sono validati con Zod. Gli errori ritornano codici non informativi.
@@ -171,4 +177,12 @@ Sono predisposti: incident management, ICT third-party provider register, change
 
 ## Stato MVP
 
-Questa e' una prima versione navigabile end-to-end con dati demo e provider mock. Prima di usare dati reali servono: hardening auth, DB reale Cloud SQL, secret rotation, CSP definitiva, malware scanning, CI/CD controllata e review legale/compliance.
+Questa e' una prima versione navigabile end-to-end con dati demo e provider mock. Le schermate principali sono operative sul runtime demo in memoria; Prisma schema e seed sono presenti per la futura persistenza PostgreSQL.
+
+Prima di usare dati reali o promuovere in produzione servono: persistenza runtime su Cloud SQL/PostgreSQL, sessioni firmate/rotazione secret, CSP definitiva, malware scanning, CI/CD controllata, review legale/compliance e decisione umana di deploy secondo HARNESS.
+
+## Deploy readiness
+
+- Preview Vercel: ammessa come verifica non produttiva tramite PR e check automatici.
+- Produzione: richiede approvazione esplicita, ADR/deploy note, checklist produzione e conferma che nessun dato reale venga trattato nel demo.
+- Stop condition: non promuovere a produzione se mancano secret management, ambiente dati approvato, rollback e owner operativo.

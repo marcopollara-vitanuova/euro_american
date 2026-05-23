@@ -9,7 +9,7 @@ import { canAccessCustomer, canAccessQuote, hasPermission, visibleDistributors }
 import { createSignatureRequestMock } from "@/lib/signature/mock";
 import { createSignedUrlMock } from "@/lib/storage/gcs";
 import { generateMockPdf } from "@/lib/documents/service";
-import { auditLogs, customers, demoDocuments, distributors, incidents, policies, products, questionnaires, quotes, referrals, thirdPartyProviders, users } from "@/lib/demo/data";
+import { auditLogs, customers, demoDocuments, demoPayments, demoSignatureRequests, distributors, incidents, policies, products, questionnaires, quotes, referrals, thirdPartyProviders, users } from "@/lib/demo/data";
 import type { Customer, Quote } from "@/lib/demo/types";
 
 const loginSchema = z.object({ identifier: z.string().min(1), password: z.string().min(8) });
@@ -91,6 +91,8 @@ export async function GET(request: NextRequest, context: Params) {
   }
   if (path === "documents") return json({ items: demoDocuments });
   if (path.match(/^documents\/[^/]+$/)) return json(demoDocuments.find((item) => item.id === path.split("/")[1]) ?? { error: "NOT_FOUND" });
+  if (path === "payments") return json({ items: demoPayments });
+  if (path === "signatures") return json({ items: demoSignatureRequests });
   if (path === "admin/distributors") return json({ items: distributors });
   if (path === "admin/users") return json({ items: users.map(({ passwordHash, ...safe }) => safe) });
   if (path === "admin/products") return json({ items: products });
@@ -176,15 +178,28 @@ export async function POST(request: NextRequest, context: Params) {
   if (path.match(/^quotes\/[^/]+\/generate-proposal$/)) {
     const id = path.split("/")[1];
     const doc = generateMockPdf(id, "Proposta Axieme MGA");
+    demoDocuments.unshift({ id: doc.id, tenantId: user.tenantId, entityType: "Quote", entityId: id, type: "PROPOSAL", name: doc.name, hash: doc.hash, status: "GENERATED" });
     audit(user, "DOCUMENT_GENERATED", "Quote", id, "MEDIUM", true);
     return json({ document: doc });
   }
   if (path.match(/^quotes\/[^/]+\/send-proposal$/)) return json({ status: "SENT", channel: "email-mock" });
-  if (path.match(/^quotes\/[^/]+\/payment-link$/)) return json(createPaymentLinkMock(path.split("/")[1], 1000));
+  if (path.match(/^quotes\/[^/]+\/payment-link$/)) {
+    const quoteId = path.split("/")[1];
+    const quote = quotes.find((item) => item.id === quoteId && canAccessQuote(user, item));
+    if (!quote) return json({ error: "NOT_FOUND" }, 404);
+    const payment = createPaymentLinkMock(quoteId, quote.grossPremium ?? 1000);
+    demoPayments.unshift(payment);
+    audit(user, "PAYMENT_LINK_GENERATED", "Quote", quoteId, "MEDIUM", true);
+    return json(payment);
+  }
   if (path.match(/^quotes\/[^/]+\/issue-policy$/)) {
     const quoteId = path.split("/")[1];
     const quote = quotes.find((item) => item.id === quoteId && canAccessQuote(user, item));
     if (!quote) return json({ error: "NOT_FOUND" }, 404);
+    const openReferral = referrals.find((item) => item.quoteId === quoteId && !["APPROVED", "APPROVED_WITH_CHANGES", "CLOSED"].includes(item.status));
+    if (openReferral) return json({ error: "REFERRAL_NOT_APPROVED" }, 409);
+    const capturedPayment = demoPayments.find((item) => item.quoteId === quoteId && item.status === "CAPTURED");
+    if (!capturedPayment) return json({ error: "PAYMENT_REQUIRED" }, 409);
     const policy = { id: `pol-${nanoid(8)}`, tenantId: user.tenantId, quoteId, customerId: quote.customerId, productId: quote.productId, policyNumber: `AXM-${new Date().getFullYear()}-${String(policies.length + 1).padStart(6, "0")}`, status: "ACTIVE" as const, inceptionDate: new Date().toISOString(), expiryDate: new Date(Date.now() + 365 * 86400000).toISOString(), grossPremium: quote.grossPremium ?? 0 };
     policies.unshift(policy);
     quote.status = "CONVERTED_TO_POLICY";
@@ -206,9 +221,22 @@ export async function POST(request: NextRequest, context: Params) {
   }
   if (path.match(/^documents\/[^/]+\/signed-url$/)) return json(createSignedUrlMock(path.split("/")[1]));
   if (path === "documents/upload") return json({ id: `upload-${nanoid(8)}`, scanStatus: "PENDING", hash: "sha256-upload-mock" }, 201);
-  if (path.match(/^policies\/[^/]+\/signature-request$/)) return json(createSignatureRequestMock(path.split("/")[1]));
+  if (path.match(/^policies\/[^/]+\/signature-request$/)) {
+    const policyId = path.split("/")[1];
+    const signature = createSignatureRequestMock(policyId);
+    demoSignatureRequests.unshift(signature);
+    audit(user, "SIGNATURE_REQUEST_CREATED", "Policy", policyId, "HIGH", true);
+    return json(signature);
+  }
   if (path.match(/^policies\/[^/]+\/renewal$/)) return json({ id: `ren-${nanoid(8)}`, status: "RENEWAL_QUOTE_GENERATED" });
-  if (path.match(/^payments\/[^/]+\/simulate-(success|failure)$/)) return json({ id: path.split("/")[1], status: path.endsWith("success") ? "CAPTURED" : "FAILED", idempotencyKey: `idem-${nanoid(8)}` });
+  if (path.match(/^payments\/[^/]+\/simulate-(success|failure)$/)) {
+    const id = path.split("/")[1];
+    const payment = demoPayments.find((item) => item.id === id);
+    const status = path.endsWith("success") ? "CAPTURED" : "FAILED";
+    if (payment) payment.status = status;
+    audit(user, `PAYMENT_${status}`, "Payment", id, "HIGH", status === "CAPTURED");
+    return json({ id, status, idempotencyKey: `idem-${nanoid(8)}` });
+  }
   if (path.startsWith("admin/") || path.startsWith("statements") || path.startsWith("webhooks/")) return json({ ok: true, path, status: "MOCKED_ENDPOINT" });
   return json({ error: "NOT_FOUND", path }, 404);
 }

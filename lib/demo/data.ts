@@ -73,6 +73,14 @@ export const demoDocuments = [
   { id: "doc-2", tenantId: "tenant-axieme-demo", entityType: "Policy", entityId: "pol-1", type: "POLICY", name: "Polizza AXM-2026-000001.pdf", hash: "sha256-demo-policy", status: "ARCHIVED" },
 ];
 
+export const demoPayments = [
+  { id: "pay-quote-1", quoteId: "quote-1", amount: 1464, status: "CAPTURED", providerPaymentId: "mock-paid-quote-1", url: "/api/payments/mock/quote-1" },
+];
+
+export const demoSignatureRequests = [
+  { id: "sig-pol-1", policyId: "pol-1", status: "SIGNED", otpChannel: "email", expiresAt: "2026-12-31T23:59:59.000Z" },
+];
+
 export const incidents = [
   { id: "inc-1", tenantId: "tenant-axieme-demo", title: "Login brute force simulato", severity: "MEDIUM", status: "TRIAGED", dataBreachSuspected: false, owner: "Security Owner" },
 ];
